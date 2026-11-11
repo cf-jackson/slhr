@@ -1,8 +1,8 @@
 # HR 月結考勤檢核系統
-https://hrdemo.createfuture.com.tw/
+https://jacksonliu119.github.io/slhr/
 這是一個可直接用瀏覽器開啟的 HR 考勤月結檢核網頁工具。
 
-目前可使用網址：[https://hrdemo.createfuture.com.tw/](https://hrdemo.createfuture.com.tw/)。若後續專案移轉組織、改名或調整部署位置，請同步更新此連結。
+目前可使用網址：[https://jacksonliu119.github.io/slhr/](https://jacksonliu119.github.io/slhr/)。若後續專案移轉組織、改名或調整部署位置，請同步更新此連結。
 
 ## 主要功能
 
