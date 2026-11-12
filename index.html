@@ -41,10 +41,13 @@
       font: inherit;
     }
 
+    /* 欄寬固定為 minmax(0, 1fr)：若讓 grid 依內容決定欄寬，每日明細表格的 min-width: 1080px
+       會把 main 與整個匯入主頁撐寬，窄視窗時右側被切掉、整頁水平捲動（.table-wrap 的捲動失效）。 */
     .app {
       min-height: 100vh;
       display: grid;
       grid-template-rows: auto 1fr;
+      grid-template-columns: minmax(0, 1fr);
     }
 
     header {
@@ -85,17 +88,18 @@
 
     .page-view.hidden { display: none; }
 
-    .architecture { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; margin-bottom: 18px; }
+    /* 卡片依寬度自動換行（每張至少約 340px），避免固定 3 欄把內容擠到被 overflow:hidden 截掉。 */
+    .architecture { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); gap: 16px; margin-bottom: 18px; }
 
     .architecture-card { background: var(--panel); border: 1px solid var(--line); border-top: 4px solid var(--blue); border-radius: 8px; padding: 18px; min-height: 142px; min-width: 0; overflow: hidden; box-shadow: var(--shadow); }
     .architecture-card:nth-child(2) { border-top-color: var(--green); }
     .architecture-card:nth-child(3) { border-top-color: var(--amber); }
-    .shift-card { min-height: 360px; }
+    .shift-card { grid-column: 1 / -1; min-height: 0; }
     .holiday-settings { display: grid; gap: 10px; margin-top: 14px; }
-    .holiday-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.25fr) minmax(92px, .8fr) auto; gap: 8px; align-items: center; }
+    .holiday-form { display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 8px; align-items: center; }
     .holiday-form input, .holiday-form select { min-height: 36px; border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
     .holiday-list { display: grid; gap: 6px; max-height: 180px; overflow: auto; }
-    .holiday-item { display: grid; grid-template-columns: 92px minmax(0, 1fr) 82px auto; gap: 8px; align-items: center; min-width: 0; padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; font-size: 13px; }
+    .holiday-item { display: grid; grid-template-columns: 92px minmax(0, 1fr) auto auto; gap: 8px; align-items: center; min-width: 0; padding: 7px 8px; border: 1px solid var(--line); border-radius: 6px; font-size: 13px; }
     .holiday-item strong { min-width: 0; overflow-wrap: anywhere; }
     .holiday-item .holiday-type { color: var(--muted); }
     .holiday-item .button { min-height: 32px; padding: 6px 8px; }
@@ -116,15 +120,24 @@
     .placeholder-panel p { margin: 0; color: var(--muted); }
     .setting-option { display: flex; align-items: flex-start; gap: 10px; margin-top: 14px; color: var(--ink); }
     .setting-option input { width: 18px; height: 18px; margin-top: 2px; accent-color: var(--blue); }
+    tfoot .summary-row td { background: #eef3fb; text-align: right; }
+    .anomaly-summary { padding: 10px 16px; border-top: 1px solid var(--line); background: #eef3fb; font-size: 14px; line-height: 1.8; }
+    .anomaly-summary:empty { display: none; }
+    .anomaly-item { display: inline-block; margin-right: 16px; }
     .shift-settings { display: grid; gap: 8px; margin-top: 14px; }
-    .shift-row { display: grid; grid-template-columns: minmax(120px, 1fr) 110px 110px auto; gap: 8px; align-items: center; }
+    .shift-row { display: grid; grid-template-columns: minmax(80px, 1fr) 140px 140px 84px auto; gap: 8px; align-items: center; }
+    .shift-field { display: contents; }
+    .shift-field-label { display: none; }
+    .shift-row input { width: 100%; min-width: 0; }
     .shift-row input { min-height: 36px; border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
     .shift-row .button { min-height: 36px; padding: 6px 10px; }
-    .shift-heading { display: grid; grid-template-columns: minmax(120px, 1fr) 110px 110px auto; gap: 8px; color: var(--muted); font-size: 12px; font-weight: 700; }
+    .shift-heading { display: grid; grid-template-columns: minmax(80px, 1fr) 140px 140px 84px auto; gap: 8px; color: var(--muted); font-size: 12px; font-weight: 700; }
     .shift-add { margin-top: 8px; }
     .rule-setting { display: grid; grid-template-columns: minmax(0, 1fr) 120px; gap: 8px; align-items: center; margin-top: 16px; }
     .rule-setting input { min-height: 36px; border: 1px solid var(--line); border-radius: 6px; padding: 6px 8px; }
     .rule-setting small { grid-column: 1 / -1; color: var(--muted); }
+    .person-shift-setting { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-top: 16px; }
+    .person-shift-setting small { flex-basis: 100%; color: var(--muted); }
     .shift-select { border: 1px solid transparent; border-radius: 5px; background: transparent; color: inherit; padding: 4px 6px; min-width: 108px; }
     .shift-select:focus { border-color: var(--blue); outline: 2px solid #c9d9f6; }
     .detail-title-row { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; }
@@ -168,6 +181,7 @@
     main {
       max-width: 1480px;
       width: 100%;
+      min-width: 0;
       margin: 0 auto;
       padding: 22px 24px 36px;
     }
@@ -423,6 +437,12 @@
 
     @media (max-width: 680px) {
       .architecture, .placeholder-grid { grid-template-columns: 1fr; }
+      .shift-heading { display: none; }
+      .shift-row { grid-template-columns: repeat(2, minmax(0, 1fr)); padding: 10px; border: 1px solid var(--line); border-radius: 6px; }
+      .shift-field { display: grid; gap: 4px; min-width: 0; }
+      .shift-field-label { display: block; color: var(--muted); font-size: 12px; font-weight: 700; }
+      .shift-field-name { grid-column: 1 / -1; }
+      .shift-row .button { align-self: end; }
       header,
       main {
         padding-left: 14px;
@@ -461,9 +481,10 @@
     <main>
       <section id="settingsView" class="page-view hidden">
         <div class="architecture">
-          <article class="architecture-card shift-card"><h2>設定班別</h2><p>維護班別名稱、起始時間與結束時間。</p><div class="shift-settings"><div class="shift-heading"><span>班別名稱</span><span>起始時間</span><span>結束時間</span><span></span></div><div id="shiftSettingsBody"><div class="shift-row" data-index="0"><input data-field="name" type="text" value="A班" aria-label="班別名稱"><input data-field="start" type="time" value="08:00" aria-label="班別起始時間"><input data-field="end" type="time" value="16:00" aria-label="班別結束時間"><button class="button" type="button" data-remove-shift="0">刪除</button></div><div class="shift-row" data-index="1"><input data-field="name" type="text" value="正常班" aria-label="班別名稱"><input data-field="start" type="time" value="08:00" aria-label="班別起始時間"><input data-field="end" type="time" value="17:30" aria-label="班別結束時間"><button class="button" type="button" data-remove-shift="1">刪除</button></div></div><button id="addShiftButton" class="button shift-add" type="button">新增班別</button></div></article>
+          <article class="architecture-card shift-card"><h2>設定班別</h2><p>維護班別名稱、起訖時間與午休扣除分鐘；起訖時間留空代表彈性班別（如兼職），只顯示實際工時。</p><div class="shift-settings"><div class="shift-heading"><span>班別名稱</span><span>起始時間</span><span>結束時間</span><span>午休(分)</span><span></span></div><div id="shiftSettingsBody"></div><button id="addShiftButton" class="button shift-add" type="button">新增班別</button></div></article>
           <article class="architecture-card holiday-card"><h2>設定假日</h2><p>已內建 2026、2027 年政府辦公日曆，可手動新增 2028 年及後續年度的國定假日或颱風假。</p><div class="holiday-settings"><div class="holiday-form"><input id="holidayDateInput" type="date" aria-label="假日日期"><input id="holidayNameInput" type="text" placeholder="假日名稱"><select id="holidayTypeInput" aria-label="假日類型"><option value="national">國定假日</option><option value="typhoon">颱風假</option></select><button id="addHolidayButton" class="button" type="button">新增假日</button></div><div id="holidayList" class="holiday-list"><div class="holiday-item"><span>2026-01-01</span><strong>元旦</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="0">刪除</button></div><div class="holiday-item"><span>2026-02-16</span><strong>春節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="1">刪除</button></div><div class="holiday-item"><span>2026-02-17</span><strong>春節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="2">刪除</button></div><div class="holiday-item"><span>2026-02-18</span><strong>春節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="3">刪除</button></div><div class="holiday-item"><span>2026-02-19</span><strong>春節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="4">刪除</button></div><div class="holiday-item"><span>2026-02-20</span><strong>春節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="5">刪除</button></div><div class="holiday-item"><span>2026-02-27</span><strong>和平紀念日補假</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="6">刪除</button></div><div class="holiday-item"><span>2026-04-03</span><strong>兒童節及清明節連假</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="7">刪除</button></div><div class="holiday-item"><span>2026-04-06</span><strong>兒童節及清明節連假</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="8">刪除</button></div><div class="holiday-item"><span>2026-05-01</span><strong>勞動節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="9">刪除</button></div><div class="holiday-item"><span>2026-06-19</span><strong>端午節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="10">刪除</button></div><div class="holiday-item"><span>2026-09-25</span><strong>中秋節及教師節連假</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="11">刪除</button></div><div class="holiday-item"><span>2026-09-28</span><strong>孔子誕辰紀念日／教師節</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="12">刪除</button></div><div class="holiday-item"><span>2026-10-09</span><strong>國慶日補假</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="13">刪除</button></div><div class="holiday-item"><span>2026-10-26</span><strong>臺灣光復暨金門古寧頭大捷紀念日補假</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="14">刪除</button></div><div class="holiday-item"><span>2026-12-25</span><strong>行憲紀念日</strong><span class="holiday-type">國定假日</span><button class="button" type="button" data-remove-holiday="15">刪除</button></div></div></div></article>
-          <article class="architecture-card"><h2>月結規則</h2><p>設定每月加班時數的醒目提示門檻。</p><div class="rule-setting"><label for="overtimeLimit">月加班上限</label><input id="overtimeLimit" type="number" min="0" step="1" value="46"><small>超過此時數後，月加班累計與備註會以紅色標示。</small></div></article>
+          <article class="architecture-card"><h2>人員班別對應</h2><p>匯入「員工編號、姓名、班別」對應表（例如人臉辨識設定.xlsx）。資料只存在這台電腦的瀏覽器，不會上傳；考勤檔若有「對應時段」欄，以考勤檔為準。</p><div class="person-shift-setting"><label class="file-label">匯入人員班別對應<input id="personShiftInput" type="file" accept=".xlsx,.xls"></label><small id="personShiftStatus"></small></div></article>
+          <article class="architecture-card"><h2>月結規則</h2><p>設定每月加班時數的醒目提示門檻。</p><div class="rule-setting"><label for="overtimeLimit">月加班上限</label><input id="overtimeLimit" type="number" min="0" step="1" value="54"><small>超過此時數後，月加班累計與備註會以紅色標示。</small></div></article>
         </div>
         <div class="placeholder-grid">
           <section class="placeholder-panel"><h2>其他功能</h2><p>放置加班計算與資料來源等共用設定。</p><label class="setting-option"><input id="floorOvertimeCheckbox" type="checkbox"><span><strong>加班時數無條件捨去小數</strong><br><small>勾選後，0.97 小時算 0 小時，2.9 小時算 2 小時，再累計月加班。</small></span></label></section>
@@ -473,8 +494,9 @@
       <section id="importView" class="page-view">
 <div class="import-actions">
   <label class="file-label">匯入 Excel<input id="fileInput" type="file" accept=".xlsx,.xls,.csv"></label>
-  <button id="exportButton" class="button primary" type="button" disabled>正常報表 B 表</button>
-  <button id="complianceButton" class="button" type="button" disabled>符合勞檢 A 表</button>
+  <button id="exportButton" class="button primary" type="button" disabled>考勤檢核報表</button>
+  <!-- A 表（符合勞檢）暫時隱藏：曦立不使用；按鈕與程式保留，移除 hidden 即可恢復。 -->
+  <button id="complianceButton" class="button hidden" type="button" disabled>符合勞檢 A 表</button>
 </div>
       <section class="controls">
         <div class="field">
@@ -516,7 +538,8 @@
             <div>
               <div class="detail-title-row">
                 <div id="detailTitle" class="panel-title">每日明細</div>
-                <label class="month-shift-control" for="monthShiftSelect">
+                <!-- 整月班別暫時隱藏：曦立每人班別固定；元件與程式保留，移除 hidden 即可恢復。 -->
+                <label class="month-shift-control hidden" for="monthShiftSelect">
                   <span>整月班別</span>
                   <select id="monthShiftSelect" disabled></select>
                 </label>
@@ -539,13 +562,16 @@
                 <th>下班2</th>
                 <th>合計</th>
                 <th>加班時數</th>
+                <th>加班倍數後</th>
                 <th>月加班累計</th>
                 <th>備註</th>
               </tr>
             </thead>
-              <tbody id="detailBody"><tr><td colspan="12" class="empty">尚無人員資料</td></tr></tbody>
+              <tbody id="detailBody"><tr><td colspan="13" class="empty">尚無人員資料</td></tr></tbody>
+              <tfoot id="detailFoot"></tfoot>
             </table>
           </div>
+          <div id="anomalySummary" class="anomaly-summary"></div>
           <div class="note">欄位名稱可使用「員工序號、考勤號碼、姓名、日期、上班1、下班1、上班2、下班2、合計、加班時數」；若缺少合計，系統會用打卡時間估算。</div>
         </section>
       </section>
@@ -565,6 +591,8 @@
     floorOvertimeCheckbox.checked = localStorage.getItem("hr-floor-overtime") !== "false";
     const employeeList = document.querySelector("#employeeList");
     const detailBody = document.querySelector("#detailBody");
+    const detailFoot = document.querySelector("#detailFoot");
+    const anomalySummary = document.querySelector("#anomalySummary");
     const detailTitle = document.querySelector("#detailTitle");
     const detailSubtitle = document.querySelector("#detailSubtitle");
     const monthShiftSelect = document.querySelector("#monthShiftSelect");
@@ -576,9 +604,11 @@
     const holidayList = document.querySelector("#holidayList");
     const shiftSettingsBody = document.querySelector("#shiftSettingsBody");
     const addShiftButton = document.querySelector("#addShiftButton");
+    const personShiftInput = document.querySelector("#personShiftInput");
+    const personShiftStatus = document.querySelector("#personShiftStatus");
 
     addShiftButton.addEventListener("click", () => {
-      shifts.push({ name: "班別" + (shifts.length + 1), start: "08:00", end: "17:00" });
+      shifts.push({ name: "班別" + (shifts.length + 1), start: "08:00", end: "17:00", lunchMinutes: 60 });
       persistShifts();
       renderShiftSettings();
       render();
@@ -615,11 +645,22 @@
     let rawRows = [];
     let selectedEmployeeKey = "";
     let shiftOverrides = JSON.parse(localStorage.getItem("hr-shift-overrides") || "{}");
-    const SHIFT_STORAGE_KEY = "hr-shifts";
+    // 儲存鍵加 v2：舊版（A班／正常班）的瀏覽器設定直接忽略，避免新舊班別混在一起。
+    const SHIFT_STORAGE_KEY = "hr-shifts-v2";
+    const PERSON_SHIFT_STORAGE_KEY = "hr-person-shifts";
+    const DEFAULT_OVERTIME_LIMIT = 54;
+    // 休息日（週六）與休假日（週日、國定假日）出勤的工作時段，依設定表：08:00～12:00、12:30～16:30。
+    // A／B／C 班在這些日子都改用這組時段計算工時（08:00 前到不計、跨 12:00～12:30 扣 30 分）；P 班不套用。
+    const REST_DAY_SCHEDULE = { start: "08:00", end: "16:30", lunchMinutes: 30, lunchStart: "12:00", lunchEnd: "12:30" };
+    // lunchMinutes：午休沒有刷卡，由系統依班別扣除。
+    // start／end 為空的班別（如 P 班兼職）視為彈性班別：只顯示實際工時，不判定未滿、不計加班。
     const defaultShifts = [
-      { name: "A班", start: "08:00", end: "16:00" },
-      { name: "正常班", start: "08:00", end: "17:30" }
+      { name: "A", start: "08:30", end: "17:30", lunchMinutes: 60 },
+      { name: "B", start: "08:30", end: "17:00", lunchMinutes: 60 },
+      { name: "C", start: "08:20", end: "17:30", lunchMinutes: 70 },
+      { name: "P", start: "", end: "", lunchMinutes: 60 }
     ];
+    let personShifts = loadPersonShifts();
     let shifts = loadShifts();
     let holidays;
 
@@ -721,10 +762,32 @@
       return value.map((shift) => {
         const name = String(shift?.name || "").trim();
         if (!name) return null;
-        const start = /^\d{2}:\d{2}$/.test(String(shift.start || "")) ? shift.start : "08:00";
-        const end = /^\d{2}:\d{2}$/.test(String(shift.end || "")) ? shift.end : "17:00";
-        return { name, start, end };
+        // 起迄時間允許留空（彈性班別）；格式不對才退回預設，避免留空被誤補成 08:00。
+        const isBlank = (text) => String(text ?? "").trim() === "";
+        const start = isBlank(shift.start) ? "" : (/^\d{2}:\d{2}$/.test(String(shift.start)) ? shift.start : "08:00");
+        const end = isBlank(shift.end) ? "" : (/^\d{2}:\d{2}$/.test(String(shift.end)) ? shift.end : "17:00");
+        const lunch = Number(shift.lunchMinutes);
+        const lunchMinutes = Number.isFinite(lunch) && lunch >= 0 ? Math.round(lunch) : 0;
+        return { name, start, end, lunchMinutes };
       }).filter(Boolean);
+    }
+
+    function loadPersonShifts() {
+      try {
+        const saved = JSON.parse(localStorage.getItem(PERSON_SHIFT_STORAGE_KEY) || "[]");
+        return Array.isArray(saved) ? saved.filter((item) => item && item.name && item.shift) : [];
+      } catch (error) {
+        console.warn("人員班別對應讀取失敗", error);
+        return [];
+      }
+    }
+
+    function persistPersonShifts() {
+      try {
+        localStorage.setItem(PERSON_SHIFT_STORAGE_KEY, JSON.stringify(personShifts));
+      } catch (error) {
+        console.warn("人員班別對應儲存失敗", error);
+      }
     }
 
     function persistShifts() {
@@ -748,8 +811,9 @@
     function saveShifts() {
       shifts = normalizeShiftList(Array.from(document.querySelectorAll(".shift-row")).map((row) => ({
         name: row.querySelector("[data-field=name]").value.trim() || "未命名班別",
-        start: row.querySelector("[data-field=start]").value || "08:00",
-        end: row.querySelector("[data-field=end]").value || "17:00"
+        start: row.querySelector("[data-field=start]").value,
+        end: row.querySelector("[data-field=end]").value,
+        lunchMinutes: row.querySelector("[data-field=lunch]").value
       })));
       persistShifts();
       render();
@@ -759,9 +823,11 @@
       shiftSettingsBody.innerHTML = shifts.map((shift, index) => {
         const safeName = escapeHtml(shift.name);
         return '<div class="shift-row" data-index="' + index + '">' +
-          '<input data-field="name" type="text" value="' + safeName + '" aria-label="班別名稱">' +
-          '<input data-field="start" type="time" value="' + shift.start + '" aria-label="班別起始時間">' +
-          '<input data-field="end" type="time" value="' + shift.end + '" aria-label="班別結束時間">' +
+          // 每個欄位包一層 label：寬螢幕時 label 以 display: contents 透明對齊標題列，窄螢幕時顯示欄位名稱。
+          '<label class="shift-field shift-field-name"><span class="shift-field-label">班別名稱</span><input data-field="name" type="text" value="' + safeName + '" aria-label="班別名稱"></label>' +
+          '<label class="shift-field"><span class="shift-field-label">起始時間</span><input data-field="start" type="time" value="' + shift.start + '" aria-label="班別起始時間"></label>' +
+          '<label class="shift-field"><span class="shift-field-label">結束時間</span><input data-field="end" type="time" value="' + shift.end + '" aria-label="班別結束時間"></label>' +
+          '<label class="shift-field"><span class="shift-field-label">午休(分)</span><input data-field="lunch" type="number" min="0" step="5" value="' + shift.lunchMinutes + '" aria-label="午休扣除分鐘"></label>' +
           '<button class="button" type="button" data-remove-shift="' + index + '">刪除</button>' +
           '</div>';
       }).join("");
@@ -778,11 +844,13 @@
       }));
     }
 
+    // 班別每日應上班時數 = 起迄時間差 − 午休。起迄任一為空（彈性班別，如 P 班）回傳 null，
+    // 呼叫端必須把 null 視為「不判定未滿、不計加班」；若誤當 0 處理會讓兼職每天都被判成未滿。
     function shiftHours(shift) {
-      const start = parseClockMinutes(shift.start);
-      const end = parseClockMinutes(shift.end);
-      if (start === null || end === null) return 9;
-      return Math.max(0, end - start) / 60;
+      const start = parseClockMinutes(shift?.start);
+      const end = parseClockMinutes(shift?.end);
+      if (start === null || end === null) return null;
+      return Math.max(0, end - start - Number(shift.lunchMinutes || 0)) / 60;
     }
 
     function getAvailableShifts() {
@@ -792,15 +860,72 @@
     function normalizeImportedShift(value) {
       const importedName = String(value ?? "").trim();
       const matched = getAvailableShifts().find((shift) => shift.name === importedName);
-      return matched?.name || "正常班";
+      // 對不上任何班別時回傳空字串，讓 getShiftForDay 繼續找人員對應表，而不是在匯入時就被預設值蓋掉。
+      return matched?.name || "";
+    }
+
+    function normalizePersonText(value) {
+      return String(value ?? "").replace(/\s+/g, "").trim();
+    }
+
+    // 人員對應以「姓名 + 編號（考勤號碼或員工序號任一相符）」比對；只有姓名相符不採用，避免同名誤配。
+    function findPersonShiftName(person) {
+      const name = normalizePersonText(person?.name);
+      const numbers = [person?.attendanceNo, person?.employeeNo].map(normalizePersonText).filter(Boolean);
+      const matched = personShifts.find((item) =>
+        normalizePersonText(item.name) === name && numbers.includes(normalizePersonText(item.no)));
+      return matched ? normalizeImportedShift(matched.shift) : "";
+    }
+
+    // 從「員工編號／姓名／班別」對應表讀出人員清單。標題列用「姓名」與「班別」同時出現來辨識，
+    // 因為同一張表上方的班別時間表也有「班別」字樣。
+    function parsePersonShiftSheet(workbook) {
+      const sheet = workbook.Sheets[workbook.SheetNames[0]];
+      const rows = XLSX.utils.sheet_to_json(sheet, { header: 1, defval: "" });
+      const headerIndex = rows.findIndex((row) => Array.isArray(row)
+        && row.some((cell) => normalizeHeader(cell) === "姓名") && row.some((cell) => normalizeHeader(cell) === "班別"));
+      if (headerIndex === -1) return [];
+      const header = rows[headerIndex].map((cell) => normalizeHeader(cell));
+      const noIndex = header.findIndex((cell) => ["員工編號", "員工序號", "考勤號碼", "工號"].includes(cell));
+      const nameIndex = header.indexOf("姓名");
+      const shiftIndex = header.indexOf("班別");
+      const result = [];
+      for (const row of rows.slice(headerIndex + 1)) {
+        const name = normalizePersonText(row[nameIndex]);
+        const shift = String(row[shiftIndex] ?? "").trim();
+        if (!name) break;
+        if (!shift) continue;
+        result.push({ no: noIndex === -1 ? "" : String(row[noIndex] ?? "").trim(), name, shift });
+      }
+      return result;
     }
 
     function getShiftForDay(person, date, row) {
       const key = person.key + "|" + formatDate(date);
       const override = shiftOverrides[key];
       const available = getAvailableShifts();
+      // 優先順序：畫面手動指定 > 當天「對應時段」> 人員班別對應表 > 該員當月最常出現的對應時段 > 第一個班別。
+      // 第 4 層是給沒有考勤資料的日子用：少了它，B、C 班的人在月底無資料日會退回第一個班別 A，
+      // 列表變成「混合班別」，明細與匯出報表也會在那些日子寫成 A 班，且不會有任何錯誤訊息。
       return available.find((shift) => shift.name === override)
-        || available.find((shift) => shift.name === normalizeImportedShift(row?.shiftName));
+        || available.find((shift) => shift.name === normalizeImportedShift(row?.shiftName))
+        || available.find((shift) => shift.name === findPersonShiftName(person))
+        || available.find((shift) => shift.name === getPersonUsualShiftName(person))
+        || available[0];
+    }
+
+    // 該員當月資料列中最常出現、且能對上班別設定的「對應時段」；次數相同取先出現者。
+    function getPersonUsualShiftName(person) {
+      const counts = new Map();
+      (person?.rows || []).forEach((row) => {
+        const name = normalizeImportedShift(row.shiftName);
+        if (name) counts.set(name, (counts.get(name) || 0) + 1);
+      });
+      let best = "";
+      counts.forEach((count, name) => {
+        if (!best || count > counts.get(best)) best = name;
+      });
+      return best;
     }
 
     function resetImportedShiftOverrides(rows) {
@@ -817,6 +942,7 @@
 
     function calculateShiftOvertime(row, shift) {
       if (!shift) return applyOvertimeRule(row.overtimeHours);
+      // 彈性班別（P 班）沒有下班時間，下面的 shiftEnd === null 會直接回傳 0，即「不計加班」。
       const shiftEnd = parseClockMinutes(shift.end);
       const actualEnds = [row.end1, row.end2].map(parseClockMinutes).filter((value) => value !== null);
       if (shiftEnd === null || !actualEnds.length) return 0;
@@ -917,22 +1043,74 @@
         [row.start1, row.end1],
         [row.start2, row.end2]
       ];
+      // 以整數「分鐘」累加，最後才除以 60：若先轉成小時再相減，C 班（9 小時 10 分扣 70 分）會算成
+      // 7.999999999999999，被「小於應上班 8 小時」判成未滿，畫面上看不出原因。
       let total = 0;
-      let hasTimePair = false;
+      let pairCount = 0;
+      let spanStart = null;
+      let spanEnd = null;
       pairs.forEach(([startText, endText], index) => {
         let start = parseClockMinutes(startText);
         const end = parseClockMinutes(endText);
         if (start === null || end === null) return;
         if (index === 0 && shiftStart !== null) start = Math.max(start, shiftStart);
-        total += Math.max(0, end - start) / 60;
-        hasTimePair = true;
+        total += Math.max(0, end - start);
+        pairCount += 1;
+        spanStart = spanStart === null ? start : Math.min(spanStart, start);
+        spanEnd = spanEnd === null ? end : Math.max(spanEnd, end);
       });
-      return hasTimePair ? total : Number(row.totalHours || 0);
+      if (!pairCount) return Number(row.totalHours || 0);
+      // 午休不刷卡：只有一組上下班（中間沒有第二段）時，依班別扣午休。
+      // 只在打卡區間完整涵蓋午休區間（平日 12:30～13:30、休息日／休假日 12:00～12:30）才扣；
+      // 半天班沒跨午休就不扣，否則半天工時會被少算。
+      // 有兩組打卡時，中間空檔已自然排除午休，不再重複扣。
+      const lunch = Number(shift?.lunchMinutes || 0);
+      // 午休區間：平日班別預設 12:30～13:30；休息日／休假日時段帶自己的 12:00～12:30。
+      const lunchStart = parseClockMinutes(shift?.lunchStart) ?? 12 * 60 + 30;
+      const lunchEnd = parseClockMinutes(shift?.lunchEnd) ?? 13 * 60 + 30;
+      const coversNoon = spanStart <= lunchStart && spanEnd >= lunchEnd;
+      if (pairCount === 1 && lunch > 0 && coversNoon) total = Math.max(0, total - lunch);
+      return total / 60;
     }
 
-    function hasMissingEndPunch(row) {
-      if (!row) return false;
-      return Boolean((row.start1 && !row.end1) || (row.start2 && !row.end2));
+    // 單邊打卡（只有上班或只有下班）不推算時間，直接標示異常，不計工時、不計加班。
+    // 若把「只有下班」改回用檔案的「出勤時間」估算，夜班或漏刷卡的人會被算出十幾小時工時，
+    // 且畫面不會有任何錯誤訊息。
+    function getPunchIssue(row) {
+      if (!row) return "";
+      if ((row.start1 && !row.end1) || (row.start2 && !row.end2)) return "下班未打卡";
+      if ((!row.start1 && row.end1) || (!row.start2 && row.end2)) return "上班未打卡";
+      return "";
+    }
+
+    // 日別：國定假日與週日為「休假日」，週六為「休息日」，平日颱風假為「typhoon」（不計考勤、不計加班），其餘為工作日。
+    // 颱風假遇到週六、週日時，依週六、週日的規則處理，所以判斷順序是：國定假日 > 週日 > 週六 > 颱風假 > 工作日。
+    function getDayType(date, holiday) {
+      if (holiday && holiday.type !== "typhoon") return "restHoliday";
+      const day = date.getDay();
+      if (day === 0) return "restHoliday";
+      if (day === 6) return "restDay";
+      if (holiday && holiday.type === "typhoon") return "typhoon";
+      return "workday";
+    }
+
+    // 休假日有出勤：8 小時內一律計 8 小時（正常休假日已給薪，出勤再多給一天），超過 8 小時照實際時數。
+    function restHolidayOvertimeHours(actualHours) {
+      return actualHours > 0 ? Math.max(8, actualHours) : 0;
+    }
+
+    // 倍數表：
+    // - 工作日、休息日（週六）：前 2 小時 ×1.34，第 3 小時起 ×1.67。
+    // - 休假日（週日、國定假日）：前 8 小時 ×1（即 8），第 9～10 小時 ×1.34，第 11 小時起 ×1.67（超過 12 小時暫比照 ×1.67）。
+    // - 平日颱風假：不計加班。
+    // hours 必須是已套用「無條件捨去」與休假日 8 小時規則後的加班時數。
+    function overtimeMultipliedHours(hours, dayType) {
+      const value = Number(hours || 0);
+      if (value <= 0 || dayType === "typhoon") return 0;
+      const result = dayType === "restHoliday"
+        ? Math.min(value, 8) + Math.min(Math.max(value - 8, 0), 2) * 1.34 + Math.max(value - 10, 0) * 1.67
+        : Math.min(value, 2) * 1.34 + Math.max(0, value - 2) * 1.67;
+      return Math.round(result * 100) / 100;
     }
 
     function applyOvertimeRule(value) {
@@ -991,8 +1169,7 @@
 
     function getReport() {
       const month = monthSelect.value;
-      const requiredHours = 9;
-      const overtimeLimit = Number(overtimeLimitInput.value || 46);
+      const overtimeLimit = getOvertimeLimit();
       const rows = rawRows.filter((row) => monthKey(row.date) === month);
       const groups = new Map();
 
@@ -1016,61 +1193,110 @@
         const days = datesInMonth(month).map((date) => {
           const found = byDate.get(formatDate(date));
           const shift = getShiftForDay(person, date, found);
-          const missingEndPunch = hasMissingEndPunch(found);
-          const countedTotalHours = found && !missingEndPunch ? calculateShiftTotalHours(found, shift) : 0;
           const weekend = [0, 6].includes(date.getDay());
           const holiday = getHolidayForDate(date);
-          const holidayOvertime = Boolean(holiday);
-          if (missingEndPunch) {
+          const dayType = getDayType(date, holiday);
+          const typhoonDay = dayType === "typhoon";
+          const holidayOvertime = dayType === "restHoliday" && Boolean(holiday);
+          // 平日颱風假不算考勤：單邊打卡不標異常（也不從檔案的出勤時間推算工時）。
+          const rawPunchIssue = getPunchIssue(found);
+          const punchIssue = typhoonDay ? "" : rawPunchIssue;
+          const missingPunch = Boolean(punchIssue);
+          // 休息日／休假日改用表上的工作時段計算工時；P 班（彈性班別）維持原本做法。
+          const restDaySchedule = (dayType === "restDay" || dayType === "restHoliday") && shiftHours(shift) !== null;
+          const scheduleShift = restDaySchedule ? { ...shift, ...REST_DAY_SCHEDULE } : shift;
+          const countedTotalHours = found && !rawPunchIssue ? calculateShiftTotalHours(found, scheduleShift) : 0;
+          // 遲到／早退、未出勤只在工作日（週一～五、非國定假日、非颱風假）判定；P 班沒有起迄，自然為 0。
+          const workday = dayType === "workday";
+          const { lateMinutes, earlyMinutes } = workday ? getLateEarlyMinutes(found, shift) : { lateMinutes: 0, earlyMinutes: 0 };
+          const lateEarlyNote = joinNotes(lateMinutes ? "遲到 " + lateMinutes + " 分" : "", earlyMinutes ? "早退 " + earlyMinutes + " 分" : "");
+          if (missingPunch) {
             return {
               ...found,
               date,
               shift,
+              scheduleShift,
               absent: false,
-              missingEndPunch: true,
+              missingPunch: true,
+              punchIssue,
               short: false,
               weekendOvertime: false,
               holidayOvertime: false,
               holiday,
               totalHours: 0,
               overtimeHours: 0,
+              overtimeMultiplied: 0,
+              lateMinutes,
+              earlyMinutes,
+              noShow: false,
               cumulativeOvertime,
-              note: "下班未打卡"
+              note: joinNotes(punchIssue, lateEarlyNote)
             };
           }
           // 如果沒有找到該日資料，或者總工時 (totalHours) 為 0，則判定為未上班/休假
           if (!found || countedTotalHours === 0) {
+            // 未出勤只算「檔案有這天的資料列、但整天沒打卡」的工作日；沒有資料列的日子（例如檔案只到 11/11，
+            // 11/12 之後）不算，否則部分月份的檔案會把月底每一天都算成請假／曠職。
+            const noShow = Boolean(found) && workday && !hasAnyPunch(found);
+            // 有打卡但工時趨近 0（例如 08:15 進、08:15 出）也會落到這個分支；遲到／早退仍要保留，
+            // 若一律歸零，這種實際只刷一次卡的日子會從異常匯總中消失（來源系統記為早退 9 小時）。
+            const punchedButZero = Boolean(found) && workday && hasAnyPunch(found);
             return {
               ...(found || {}),
               date,
               shift,
+              scheduleShift,
               absent: true,
+              missingPunch: false,
               short: false,
               weekendOvertime: false,
               holidayOvertime: Boolean(holiday),
               holiday,
               overtimeHours: 0,
+              overtimeMultiplied: 0,
+              lateMinutes: punchedButZero ? lateMinutes : 0,
+              earlyMinutes: punchedButZero ? earlyMinutes : 0,
+              noShow,
               cumulativeOvertime,
-              note: holiday ? holiday.name + " / 未上班" : "未上班 / 休假"
+              note: holiday ? holiday.name + " / 未上班" : noShow ? NO_SHOW_LABEL : punchedButZero ? joinNotes("工時 0", lateEarlyNote) : "未上班 / 休假"
             };
           }
           const weekendOvertime = weekend;
-          const overtimeHours = (weekend || holidayOvertime) ? applyOvertimeRule(countedTotalHours) : calculateShiftOvertime(found, shift);
+          // 彈性班別（P 班）shiftHours 為 null：假日／週末出勤也不計加班，只顯示實際工時。
+          const requiredHours = shiftHours(shift);
+          const flexibleShift = requiredHours === null;
+          const overtimeHours = flexibleShift || typhoonDay ? 0
+            : dayType === "restHoliday" ? restHolidayOvertimeHours(applyOvertimeRule(countedTotalHours))
+            : dayType === "restDay" ? applyOvertimeRule(countedTotalHours)
+            : calculateShiftOvertime(found, shift);
+          const overtimeMultiplied = overtimeMultipliedHours(overtimeHours, dayType);
           cumulativeOvertime += overtimeHours;
-          const short = countedTotalHours > 0 && countedTotalHours < shiftHours(shift);
+          // 未滿時數只在工作日判定：休息日／休假日沒有應上班時數（休假日更是固定計 8 小時），颱風假不計考勤。
+          const short = workday && !flexibleShift && countedTotalHours > 0 && countedTotalHours < requiredHours;
+          const dayNote = typhoonDay ? "颱風假出勤（不計考勤、不計加班）"
+            : flexibleShift && !workday ? "彈性班別不計加班"
+            : dayType === "restHoliday" ? (holiday ? holiday.name + "：" : "") + "休假日出勤，前 8 小時直接計 8 小時"
+            : dayType === "restDay" ? "休息日出勤全數計加班"
+            : short ? "未滿 " + formatHours(requiredHours) + " 小時" : "";
           return {
             ...found,
             shift,
+            scheduleShift,
             totalHours: countedTotalHours,
             weekendOvertime,
             holidayOvertime,
             holiday,
             overtimeHours,
+            overtimeMultiplied,
             absent: false,
-            missingEndPunch: false,
+            missingPunch: false,
             short,
+            typhoonDay,
+            lateMinutes,
+            earlyMinutes,
+            noShow: false,
             cumulativeOvertime,
-            note: holidayOvertime ? holiday.name + "出勤全數計加班" : weekendOvertime ? "週末出勤全數計加班" : short ? "未滿 " + formatHours(shiftHours(shift)) + " 小時" : ""
+            note: joinNotes(dayNote, lateEarlyNote)
           };
         });
         return {
@@ -1080,15 +1306,88 @@
           absentDays: days.filter((day) => day.absent).length,
           shortDays: days.filter((day) => day.short).length,
           overtimeTotal: cumulativeOvertime,
-          overLimit: cumulativeOvertime > overtimeLimit
+          overtimeMultipliedTotal: Math.round(days.reduce((sum, day) => sum + (day.overtimeMultiplied || 0), 0) * 100) / 100,
+          overLimit: cumulativeOvertime > overtimeLimit,
+          anomalies: summarizeAnomalies(days)
         };
-      }).sort((a, b) => a.name.localeCompare(b.name, "zh-Hant"));
+      }).sort(comparePeople);
 
       return { people, overtimeLimit };
     }
 
+    const NO_SHOW_LABEL = "未出勤（請假／曠職待確認）";
+
+    function joinNotes(...parts) {
+      return parts.filter(Boolean).join("；");
+    }
+
+    function hasAnyPunch(row) {
+      return Boolean(row && (row.start1 || row.end1 || row.start2 || row.end2));
+    }
+
+    // 遲到 = 第一筆上班打卡晚於班別起始；早退 = 最後一筆下班打卡早於班別結束。寬限 0 分鐘（與來源系統一致）。
+    // 單邊打卡：有上班卡才算遲到、有下班卡才算早退。
+    function getLateEarlyMinutes(row, shift) {
+      const shiftStart = parseClockMinutes(shift?.start);
+      const shiftEnd = parseClockMinutes(shift?.end);
+      if (!row || shiftStart === null || shiftEnd === null) return { lateMinutes: 0, earlyMinutes: 0 };
+      const start = parseClockMinutes(row.start1 || row.start2);
+      const ends = [row.end1, row.end2].map(parseClockMinutes).filter((value) => value !== null);
+      return {
+        lateMinutes: start !== null && start > shiftStart ? start - shiftStart : 0,
+        earlyMinutes: ends.length && Math.max(...ends) < shiftEnd ? shiftEnd - Math.max(...ends) : 0
+      };
+    }
+
+    function summarizeAnomalies(days) {
+      const sum = (pick) => days.reduce((total, day) => total + pick(day), 0);
+      return {
+        lateCount: days.filter((day) => day.lateMinutes > 0).length,
+        lateMinutes: sum((day) => day.lateMinutes || 0),
+        earlyCount: days.filter((day) => day.earlyMinutes > 0).length,
+        earlyMinutes: sum((day) => day.earlyMinutes || 0),
+        missingStart: days.filter((day) => day.punchIssue === "上班未打卡").length,
+        missingEnd: days.filter((day) => day.punchIssue === "下班未打卡").length,
+        shortDays: days.filter((day) => day.short).length,
+        noShowDays: days.filter((day) => day.noShow).length
+      };
+    }
+
+    // 畫面表尾與匯出共用的異常匯總文字，順序固定。
+    function anomalyItems(summary) {
+      return [
+        ["遲到", summary.lateCount ? `${summary.lateCount} 次，共 ${summary.lateMinutes} 分鐘` : "0 次"],
+        ["早退", summary.earlyCount ? `${summary.earlyCount} 次，共 ${summary.earlyMinutes} 分鐘` : "0 次"],
+        ["上班未打卡", `${summary.missingStart} 次`],
+        ["下班未打卡", `${summary.missingEnd} 次`],
+        ["未滿時數", `${summary.shortDays} 天`],
+        [NO_SHOW_LABEL, `${summary.noShowDays} 天`]
+      ];
+    }
+
+    // 人員依員工序號排序（沒有員工序號就用考勤號碼）；numeric 讓不同位數的號碼依數值比較，相同再依姓名。
+    // 畫面與 B／A 表匯出共用 getReport 的排序，改這裡會同時改變匯出的工作表順序。
+    function comparePeople(a, b) {
+      const keyA = String(a.employeeNo || a.attendanceNo || "");
+      const keyB = String(b.employeeNo || b.attendanceNo || "");
+      return keyA.localeCompare(keyB, "zh-Hant", { numeric: true }) || String(a.name).localeCompare(String(b.name), "zh-Hant");
+    }
+
+    // 人員列表顯示的班別：整月都同一班別顯示班別名稱，否則顯示「混合班別」。
+    function personShiftLabel(person) {
+      const names = [...new Set(person.days.map((day) => day.shift?.name).filter(Boolean))];
+      return names.length > 1 ? "混合班別" : (names[0] ? "班別 " + names[0] : "");
+    }
+
+    // 輸入框清空時退回預設上限；輸入 0 要保留為 0（所以不能用 || 判斷字串 "0"）。
+    function getOvertimeLimit() {
+      const text = String(overtimeLimitInput.value ?? "").trim();
+      const value = Number(text);
+      return text === "" || !Number.isFinite(value) ? DEFAULT_OVERTIME_LIMIT : value;
+    }
+
     function formatDayTotalHours(day) {
-      return day.absent || day.missingEndPunch ? "" : formatHours(day.totalHours);
+      return day.absent || day.missingPunch ? "" : formatHours(day.totalHours);
     }
 
     function updateMonthOptions() {
@@ -1120,12 +1419,12 @@
 
       employeeList.innerHTML = people.map((person) => {
         const badgeClass = person.overLimit ? "danger" : person.shortDays ? "warn" : "ok";
-        const badgeText = person.overLimit ? "超過46" : person.shortDays ? `${person.shortDays} 天未滿` : "正常";
+        const badgeText = person.overLimit ? `超過${report.overtimeLimit}` : person.shortDays ? `${person.shortDays} 天未滿` : "正常";
         return `
           <button class="employee-row ${person.key === selectedEmployeeKey ? "active" : ""}" type="button" data-key="${escapeHtml(person.key)}">
             <span>
               <span class="employee-name">${escapeHtml(person.name)}</span>
-              <span class="employee-meta">${escapeHtml(person.employeeNo || "-")} / ${escapeHtml(person.attendanceNo || "-")}，上班 ${person.workDays} 天，未上班 ${person.absentDays} 天</span>
+              <span class="employee-meta">${escapeHtml(person.employeeNo || "-")} / ${escapeHtml(person.attendanceNo || "-")}，${escapeHtml(personShiftLabel(person))}，上班 ${person.workDays} 天，未上班 ${person.absentDays} 天</span>
             </span>
             <span class="badge ${badgeClass}">${badgeText}</span>
           </button>
@@ -1146,7 +1445,9 @@
 
     function renderDetail(person, overtimeLimit) {
       if (!person) {
-        detailBody.innerHTML = `<tr><td colspan="12" class="empty">尚無人員資料</td></tr>`;
+        detailBody.innerHTML = `<tr><td colspan="13" class="empty">尚無人員資料</td></tr>`;
+        detailFoot.innerHTML = "";
+        anomalySummary.innerHTML = "";
         detailTitle.textContent = "每日明細";
         detailSubtitle.textContent = "列出整個月份每日狀態";
         monthShiftSelect.innerHTML = "";
@@ -1168,9 +1469,9 @@
       monthOvertimeBadge.className = `badge ${person.overLimit ? "danger" : "ok"}`;
 
       detailBody.innerHTML = person.days.map((day) => {
-        const status = day.missingEndPunch ? "下班未打卡" : day.absent ? (day.holiday ? (day.holiday.type === "typhoon" ? "颱風假" : "國定假日") : "未上班 / 休假") : day.holidayOvertime ? (day.holiday?.type === "typhoon" ? "颱風假加班" : "國定假日加班") : day.weekendOvertime ? "週末加班" : day.short ? "未滿時數" : "正常";
-        const statusClass = day.missingEndPunch ? "danger" : day.absent ? "warn" : day.holidayOvertime || day.weekendOvertime || day.short ? "danger" : "ok";
-        const rowClass = [day.missingEndPunch ? "missing-end" : "", day.absent ? "absent" : "", day.short ? "short" : "", day.overtimeHours > 0 ? "overtime" : "", day.cumulativeOvertime > overtimeLimit ? "over-limit" : ""].join(" ");
+        const status = day.missingPunch ? day.punchIssue : day.absent ? (day.holiday ? (day.holiday.type === "typhoon" ? "颱風假" : "國定假日") : "未上班 / 休假") : day.typhoonDay ? "颱風假出勤" : day.holidayOvertime ? "國定假日加班" : day.weekendOvertime ? "週末加班" : day.short ? "未滿時數" : "正常";
+        const statusClass = day.missingPunch ? "danger" : day.absent || day.typhoonDay ? "warn" : day.holidayOvertime || day.weekendOvertime || day.short ? "danger" : "ok";
+        const rowClass = [day.missingPunch ? "missing-end" : "", day.absent ? "absent" : "", day.short ? "short" : "", day.overtimeHours > 0 ? "overtime" : "", day.cumulativeOvertime > overtimeLimit ? "over-limit" : ""].join(" ");
         return `
           <tr class="${rowClass}">
             <td>${formatDate(day.date)}</td>
@@ -1182,14 +1483,21 @@
             <td>${escapeHtml(day.end2 || "")}</td>
             <td class="hours">${formatDayTotalHours(day)}</td>
             <td class="overtime-cell">${day.overtimeHours ? formatHours(day.overtimeHours) : ""}</td>
+            <td class="overtime-cell">${day.overtimeMultiplied ? formatHours(day.overtimeMultiplied) : ""}</td>
             <td class="cumulative-cell">${day.cumulativeOvertime ? formatHours(day.cumulativeOvertime) : ""}</td>
             <td class="note-cell">${escapeHtml(day.note || "")}${day.cumulativeOvertime > overtimeLimit ? "，月加班已超過上限" : ""}</td>
           </tr>
         `;
       }).join("");
+      detailFoot.innerHTML = `
+        <tr class="summary-row"><td colspan="9"><strong>原加班時數合計</strong></td><td><strong>${formatHours(person.overtimeTotal)}</strong></td><td colspan="3"></td></tr>
+        <tr class="summary-row"><td colspan="10"><strong>加班倍數後合計</strong></td><td><strong>${formatHours(person.overtimeMultipliedTotal)}</strong></td><td colspan="2"></td></tr>`;
+      // 異常匯總放在表格外：表格最小寬 1080px 會橫向捲動，放在表尾時窄視窗會被切掉一半。
+      anomalySummary.innerHTML = `<strong>異常匯總：</strong>` + anomalyItems(person.anomalies)
+        .map(([label, value]) => `<span class="anomaly-item">${escapeHtml(label)} <strong>${escapeHtml(value)}</strong></span>`).join("");
 detailBody.querySelectorAll(".shift-select").forEach((select) => {
         select.innerHTML = getAvailableShifts().map((shift) => '<option value="' + escapeHtml(shift.name) + '">' + escapeHtml(shift.name) + '</option>').join("");
-        select.value = select.dataset.shift || "正常班";
+        select.value = select.dataset.shift || getAvailableShifts()[0]?.name || "";
         select.addEventListener("change", () => {
           const key = person.key + "|" + select.dataset.date;
           shiftOverrides[key] = select.value;
@@ -1216,7 +1524,7 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
       document.querySelector("#totalOverLimit").textContent = "0";
       document.querySelector("#employeeCount").textContent = "0 人";
       employeeList.innerHTML = `<div class="empty">請先匯入 Excel 或載入範例資料</div>`;
-      renderDetail(null, Number(overtimeLimitInput.value || 46));
+      renderDetail(null, getOvertimeLimit());
       exportButton.disabled = true;
       complianceButton.disabled = true;
     }
@@ -1272,8 +1580,81 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
       const file = event.target.files[0];
       if (!file) return;
       const buffer = await file.arrayBuffer();
+      loadWorkbook(readWorkbookFile(buffer, file.name));
+    });
+
+    // 舊版 .xls 沒有編碼標記，直接讀會把 Big5 中文當成西歐字元，欄名變亂碼、匯入 0 筆（無錯誤訊息）。
+    // 不能用 XLSX.read 的 codepage: 950：瀏覽器版套件沒有 Big5 編碼表，該選項會被默默忽略
+    // （Node 會自動載入編碼表，所以只在 Node 測試會誤以為可行）。改為讀完後用瀏覽器內建的
+    // TextDecoder("big5") 把亂碼字串還原。.xlsx 內建 Unicode、.csv 多為 UTF-8，不做處理。
+    function readWorkbookFile(buffer, fileName) {
       const workbook = XLSX.read(buffer, { type: "array", cellDates: true });
-      loadWorkbook(workbook);
+      if (/\.xls$/i.test(String(fileName || ""))) redecodeWorkbookBig5(workbook);
+      return workbook;
+    }
+
+    function redecodeBig5Text(text) {
+      if (typeof text !== "string") return text;
+      // SheetJS 以 cp1252 解碼位元組：0xA0 以上與 Latin-1 相同，0x80～0x9F 會變成特殊符號，需反查回位元組。
+      if (!redecodeBig5Text.reverse) {
+        redecodeBig5Text.reverse = {};
+        const decoder = new TextDecoder("windows-1252");
+        for (let byte = 0x80; byte <= 0x9f; byte++) redecodeBig5Text.reverse[decoder.decode(new Uint8Array([byte]))] = byte;
+      }
+      const bytes = [];
+      for (const char of text) {
+        const code = char.codePointAt(0);
+        if (code <= 0xff) bytes.push(code);
+        else if (redecodeBig5Text.reverse[char] !== undefined) bytes.push(redecodeBig5Text.reverse[char]);
+        else return text; // 已含真正的 Unicode 字元，代表檔案本身編碼正確，不處理
+      }
+      if (!bytes.some((byte) => byte >= 0x80)) return text;
+      const decoded = new TextDecoder("big5").decode(new Uint8Array(bytes));
+      return decoded.includes("�") ? text : decoded;
+    }
+
+    function redecodeWorkbookBig5(workbook) {
+      Object.values(workbook.Sheets || {}).forEach((sheet) => {
+        Object.keys(sheet).forEach((address) => {
+          if (address[0] === "!") return;
+          const cell = sheet[address];
+          if (!cell || cell.t !== "s") return;
+          cell.v = redecodeBig5Text(cell.v);
+          if (typeof cell.w === "string") cell.w = redecodeBig5Text(cell.w);
+        });
+      });
+    }
+
+    function renderPersonShiftStatus() {
+      if (!personShifts.length) {
+        personShiftStatus.textContent = "尚未匯入人員班別對應。";
+        return;
+      }
+      const known = new Set(getAvailableShifts().map((shift) => shift.name));
+      const unknown = [...new Set(personShifts.filter((item) => !known.has(item.shift)).map((item) => item.shift))];
+      personShiftStatus.textContent = `已匯入 ${personShifts.length} 人的班別對應。` +
+        (unknown.length ? `班別 ${unknown.join("、")} 不在班別設定中，這些人會改用第一個班別。` : "");
+    }
+
+    personShiftInput.addEventListener("change", async (event) => {
+      const file = event.target.files[0];
+      if (!file) return;
+      try {
+        const list = parsePersonShiftSheet(readWorkbookFile(await file.arrayBuffer(), file.name));
+        if (!list.length) {
+          personShiftStatus.textContent = "找不到含「姓名」與「班別」的標題列，未變更現有對應。";
+          return;
+        }
+        personShifts = list;
+        persistPersonShifts();
+        renderPersonShiftStatus();
+        render();
+      } catch (error) {
+        console.warn("人員班別對應匯入失敗", error);
+        personShiftStatus.textContent = "人員班別對應匯入失敗，未變更現有對應。";
+      } finally {
+        personShiftInput.value = "";
+      }
     });
 
     floorOvertimeCheckbox.addEventListener("change", () => {
@@ -1290,10 +1671,12 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
       const overLimit = day.cumulativeOvertime > overtimeLimit;
       const baseStatus = day.absent
         ? (day.holiday ? (day.holiday.type === "typhoon" ? "颱風假" : "國定假日") : "未上班 / 休假")
-        : day.missingEndPunch
-          ? "下班未打卡"
+        : day.missingPunch
+          ? day.punchIssue
+        : day.typhoonDay
+          ? "颱風假出勤"
         : day.holidayOvertime
-          ? (day.holiday?.type === "typhoon" ? "颱風假加班" : "國定假日加班")
+          ? "國定假日加班"
           : day.weekendOvertime ? "週末加班" : day.short ? "未滿時數" : "正常";
       return overLimit && baseStatus === "正常" ? "正常；月加班超過上限" : baseStatus;
     }
@@ -1308,7 +1691,7 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
 
     exportButton.addEventListener("click", () => {
       const report = getReport();
-      const headers = ["日期", "星期", "班別", "狀態", "班別起始", "班別結束", "上班1", "下班1", "上班2", "下班2", "合計小時", "加班時數", "月加班累計", "備註"];
+      const headers = ["日期", "星期", "班別", "狀態", "班別起始", "班別結束", "上班1", "下班1", "上班2", "下班2", "合計小時", "加班時數", "加班倍數後", "月加班累計", "備註"];
       
       const headerStyle = {
         font: { bold: true, color: { rgb: "FFFFFF" } },
@@ -1340,6 +1723,26 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
       const workbook = XLSX.utils.book_new();
       const usedSheetNames = new Set();
 
+      // 第一張「異常匯總」總表：每人一列，方便一次看全公司；個人工作表最下方另有同樣的匯總。
+      const overviewHeaders = ["考勤號碼", "員工序號", "姓名", "班別", "遲到次數", "遲到分鐘", "早退次數", "早退分鐘", "上班未打卡", "下班未打卡", "未滿時數(天)", NO_SHOW_LABEL + "(天)", "原加班時數", "加班倍數後"];
+      const overviewRows = [[`月份：${monthSelect.value}`], overviewHeaders];
+      report.people.forEach((person) => {
+        const a = person.anomalies;
+        overviewRows.push([person.attendanceNo || "", person.employeeNo || "", person.name, personShiftLabel(person).replace(/^班別 /, ""),
+          a.lateCount, a.lateMinutes, a.earlyCount, a.earlyMinutes, a.missingStart, a.missingEnd, a.shortDays, a.noShowDays,
+          formatHours(person.overtimeTotal), formatHours(person.overtimeMultipliedTotal)]);
+      });
+      const overviewSheet = XLSX.utils.aoa_to_sheet(overviewRows);
+      Object.keys(overviewSheet).forEach((address) => {
+        if (address[0] === "!") return;
+        const cell = XLSX.utils.decode_cell(address);
+        overviewSheet[address].s = cell.r === 0 ? infoStyle : cell.r === 1 ? headerStyle : normalStyle;
+      });
+      overviewSheet["!cols"] = overviewHeaders.map((title, index) => ({ wch: index === 2 ? 14 : Math.max(10, title.length * 2) }));
+      overviewSheet["!freeze"] = { xSplit: 0, ySplit: 2 };
+      usedSheetNames.add("異常匯總");
+      XLSX.utils.book_append_sheet(workbook, overviewSheet, "異常匯總");
+
       report.people.forEach((person) => {
         const infoRow = new Array(headers.length).fill("");
         infoRow[0] = `月份：${monthSelect.value}`;
@@ -1357,14 +1760,16 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
             `星期${weekdays[day.date.getDay()]}`,
             day.shift?.name || "",
             getReportDayStatus(day, report.overtimeLimit),
-            day.shift?.start || "",
-            day.shift?.end || "",
+            // 班別起訖顯示當天實際採用的時段（週六、週日、國定假日為 08:00／16:30）。
+            (day.scheduleShift || day.shift)?.start || "",
+            (day.scheduleShift || day.shift)?.end || "",
             day.start1 || "",
             day.end1 || "",
             day.start2 || "",
             day.end2 || "",
             formatDayTotalHours(day),
             day.overtimeHours ? formatHours(day.overtimeHours) : "",
+            day.overtimeMultiplied ? formatHours(day.overtimeMultiplied) : "",
             day.cumulativeOvertime ? formatHours(day.cumulativeOvertime) : "",
             `${day.note || ""}${overLimitAfterThisDay ? "，月加班已超過上限" : ""}`
           ]);
@@ -1372,7 +1777,7 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
           styles.push(headers.map((_, columnIndex) => {
             const statusStyle = day.absent
               ? statusWarnStyle
-              : day.missingEndPunch || day.holidayOvertime || day.weekendOvertime || day.short || overLimitAfterThisDay
+              : day.missingPunch || day.holidayOvertime || day.weekendOvertime || day.short || overLimitAfterThisDay
                 ? redStyle
                 : okStyle;
             if (columnIndex === 3) {
@@ -1380,6 +1785,30 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
             }
             return isCalendarRestDay(day) ? withHolidayFill(normalStyle) : normalStyle;
           }));
+        });
+
+        // 每位員工下方的合計列：原加班時數合計、加班倍數後合計（欄位 11、12 對應「加班時數」「加班倍數後」）。
+        const summaryStyle = { ...normalStyle, font: { bold: true }, fill: { fgColor: { rgb: "EEF3FB" } } };
+        const summaryRow = (label, columnIndex, value) => {
+          const row = new Array(headers.length).fill("");
+          row[0] = label;
+          row[columnIndex] = formatHours(value);
+          rows.push(row);
+          styles.push(headers.map(() => summaryStyle));
+        };
+        summaryRow("原加班時數合計", 11, person.overtimeTotal);
+        summaryRow("加班倍數後合計", 12, person.overtimeMultipliedTotal);
+        // 異常匯總：標籤放第 0 欄、內容放第 2 欄（「班別」欄較寬，相鄰欄空白時文字可完整顯示）。
+        const anomalyTitle = new Array(headers.length).fill("");
+        anomalyTitle[0] = "異常匯總";
+        rows.push(anomalyTitle);
+        styles.push(headers.map(() => summaryStyle));
+        anomalyItems(person.anomalies).forEach(([label, value]) => {
+          const row = new Array(headers.length).fill("");
+          row[0] = label;
+          row[2] = value;
+          rows.push(row);
+          styles.push(headers.map(() => normalStyle));
         });
 
         const worksheet = XLSX.utils.aoa_to_sheet(rows);
@@ -1398,7 +1827,7 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
         worksheet["!cols"] = [
           { wch: 12 }, { wch: 8 }, { wch: 12 }, { wch: 10 }, { wch: 10 },
           { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 10 },
-          { wch: 10 }, { wch: 10 }, { wch: 10 }, { wch: 28 }
+          { wch: 10 }, { wch: 10 }, { wch: 12 }, { wch: 10 }, { wch: 28 }
         ];
         worksheet["!rows"] = [{ hpt: infoRowHeight }, { hpt: 22 }];
         worksheet["!freeze"] = { xSplit: 0, ySplit: 2 };
@@ -1434,7 +1863,7 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
       const blobUrl = URL.createObjectURL(blob);
       const a = document.createElement("a");
       a.href = blobUrl;
-      a.download = `HR月結考勤檢核_正常報表_B表_${monthSelect.value}.xlsx`;
+      a.download = `考勤檢核報表_${monthSelect.value}.xlsx`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -1449,7 +1878,7 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
     }
 
     function getInspectionEndTime(day) {
-      if (day.absent || day.weekendOvertime || day.holidayOvertime || day.cumulativeOvertime <= Number(overtimeLimitInput.value || 46)) return "";
+      if (day.absent || day.weekendOvertime || day.holidayOvertime || day.cumulativeOvertime <= getOvertimeLimit()) return "";
       const endKey = day.end2 ? "end2" : "end1";
       const endMinutes = parseClockMinutes(day[endKey]);
       return endMinutes === null ? "" : formatClockMinutes(endMinutes - day.overtimeHours * 60);
@@ -1522,7 +1951,7 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
           if (!day.absent && !adjustOvertime) inspectionCumulative += day.overtimeHours;
           const adjustedEndKey = day.end2 ? "end2" : "end1";
           const adjustedDay = adjustOvertime ? { ...day, [adjustedEndKey]: inspectionEnd } : day;
-          const checkTotal = day.absent || day.missingEndPunch || (adjustOvertime && isRestDay)
+          const checkTotal = day.absent || day.missingPunch || (adjustOvertime && isRestDay)
             ? ""
             : formatHours(adjustOvertime ? calculateShiftTotalHours(adjustedDay, day.shift) : day.totalHours);
           const inspectionStatus = getInspectionStatus(day, inspectionStart, inspectionEnd);
@@ -1533,7 +1962,7 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
             : inspectionStatus === "正常" ? okStyle : redStyle;
           const reportBaseStyle = day.absent
             ? statusWarnStyle
-            : day.missingEndPunch || day.holidayOvertime || day.weekendOvertime || day.short || adjustOvertime || checkDay.cumulativeOvertime > report.overtimeLimit
+            : day.missingPunch || day.holidayOvertime || day.weekendOvertime || day.short || adjustOvertime || checkDay.cumulativeOvertime > report.overtimeLimit
               ? redStyle
               : okStyle;
           const inspectionStatusStyle = isCalendarRestDay(day) ? withHolidayFill(inspectionBaseStyle) : inspectionBaseStyle;
@@ -1609,6 +2038,7 @@ detailBody.querySelectorAll(".shift-select").forEach((select) => {
       };
     }
 
+    renderPersonShiftStatus();
     renderEmpty();
     showView("importView");
   </script>
